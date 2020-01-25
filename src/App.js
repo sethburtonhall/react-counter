@@ -1,26 +1,53 @@
-import React from 'react';
-import logo from './logo.svg';
-import './App.css';
+import React, { useState } from "react";
+import NavBar from "./components/navbar";
+import Counters from "./components/counters";
 
-function App() {
+const App = () => {
+  const [counters, setCounters] = useState([
+    {
+      id: 1,
+      value: 0
+    },
+    {
+      id: 2,
+      value: 0
+    }
+  ]);
+
+  const handleReset = () => {
+    const resetCounters = counters.map(counters => {
+      counters.value = 0;
+      return counters;
+    });
+    setCounters(resetCounters);
+  };
+
+  const handleIncrement = counter => {
+    const addCounters = [...counters];
+    const index = counters.indexOf(counter);
+    addCounters[index] = { ...counter };
+    addCounters[index].value++;
+    setCounters(addCounters);
+  };
+
+  const handleDelete = counterId => {
+    const newCounters = counters.filter(counters => counters.id !== counterId);
+    setCounters(newCounters);
+  };
+
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
+    <div className="app">
+      <NavBar totalCounters={counters.filter(counters => counters.value > 0).length} />
+      <main className="container">
+        <Counters
+          counters={counters}
+          onReset={handleReset}
+          onIncrement={handleIncrement}
+          onDelete={handleDelete}
+        />
+      </main>
     </div>
   );
-}
+};
 
 export default App;
